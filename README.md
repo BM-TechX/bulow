@@ -1,5 +1,5 @@
-# vibration_vials
-Code for for Novo project: detecting tipped-over vials on a vibrating platform. 
+# Bulow project
+Code for Bulow to detect emblem for applying labels
 
 If USB Basler camera is used, pylon SDKs are needed to get feed from it. To do so:
 
