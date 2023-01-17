@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import yaml
 
@@ -9,6 +10,9 @@ if __name__ == '__main__':
     parser.add_argument('--labels', type=list, default=None)
     parser.add_argument('--yaml_fname', type=str, default='my_data.yaml')
     args = parser.parse_args() 
+
+    if args.labels is None:
+        sys.exit("No labels passed!")
 
     yaml_dict = {
         'path' : args.path2dataset,
