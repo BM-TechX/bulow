@@ -39,7 +39,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_size', type=float, default=0.15, help='size of the test set')
     args = parser.parse_args()
 
-    with open(args.path2annotations) as f:
+    with open(os.path.join(args.path2annotations, args.json_fname)) as f:
         coco_file = json.load(f)
 
     # some mappings
