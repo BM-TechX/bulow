@@ -21,6 +21,6 @@ if __name__ == '__main__':
 
     # path2yaml = args.path2dataset.replace('dataset', args.yolovx)
     # path2yaml = os.path.join(path2yaml, 'data/my_data.yaml')
-    path2yaml = f"yolov5/data/{args.yaml_fname}"
+    path2yaml = f"{args.yolovx}/data/{args.yaml_fname}"
     with open(path2yaml, 'w') as f:
         yaml.dump(yaml_dict, f)
