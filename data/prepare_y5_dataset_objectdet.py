@@ -83,7 +83,7 @@ if __name__ == '__main__':
                 )
 
                 shutil.copyfile(
-                    args.path2images_all,
+                    os.path.join(args.path2images_all, fname),
                     os.path.join(args.path2dataset, f"images/{set_name}/{fname}")
                 )
 
