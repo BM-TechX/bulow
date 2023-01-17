@@ -21,8 +21,8 @@ if __name__ == '__main__':
         'train': "images/train",  # os.path.join(args.path2dataset, "images/train"),   # path to the train folder
         'val'  : "images/valid",  # os.path.join(args.path2dataset, "images/valid"),   # path to the valid folder
         'test' : "images/test",   # os.path.join(args.path2dataset, "images/test"),    # path to the test folder
-        'nc'   : len(args.labels),
-        'names': {i: x for i, x in enumerate(args.labels)}
+        'nc'   : labels,
+        'names': {i: x for i, x in enumerate(labels)}
     }
 
     # path2yaml = args.path2dataset.replace('dataset', args.yolovx)
