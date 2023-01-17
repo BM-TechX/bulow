@@ -30,14 +30,16 @@ def filter_images(images_list, annotations_list):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--path2dataset', type=str, default='/home/orin/vibratorvials/dataset', help='path to data directory')
+    parser.add_argument('--path2dataset', type=str, default='dataset/', help='path to the yolov5 dataset')
+    parser.add_argument('--path2images_all', type=str, default='images/')
+    parser.add_argument('--path2annotations', type=str, default='annotations/')
     parser.add_argument('--json_fname', type=str, default='coco_annotations.json')
     parser.add_argument('--train_size', type=float, default=0.7, help='size of the train set')
     parser.add_argument('--valid_size', type=float, default=0.15, help='size of the validation set')
     parser.add_argument('--test_size', type=float, default=0.15, help='size of the test set')
     args = parser.parse_args()
 
-    with open(os.path.join(args.path2dataset, f"annotations/{args.json_fname}")) as f:
+    with open(args.path2annotations) as f:
         coco_file = json.load(f)
 
     # some mappings
@@ -81,9 +83,9 @@ if __name__ == '__main__':
                 )
 
                 shutil.copyfile(
-                    os.path.join(args.path2dataset, f"images_all/{fname}"),
+                    args.path2images_all,
                     os.path.join(args.path2dataset, f"images/{set_name}/{fname}")
                 )
 
                 # write {set_name}.txt files
-                f.write(os.path.join(args.path2dataset, f"images_all/{fname}") + '\n')
+                f.write(args.path2images_all + '\n')
