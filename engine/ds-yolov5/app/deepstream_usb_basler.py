@@ -29,6 +29,8 @@ import configparser
 
 import pyds
 
+no_display = False
+
 # PGIE_CLASS_ID_PLATFORM = 0
 CLASS_ID_VIALSDOWN = 0
 past_tracking_meta = [0]
@@ -202,9 +204,9 @@ def main(args):
     if not source:
         sys.stderr.write(" Unable to create Source \n")
 
-    # caps_v4l2src = Gst.ElementFactory.make("capsfilter", "v4l2src_caps")
-    # if not caps_v4l2src:
-    #     sys.stderr.write(" Unable to create v4l2src capsfilter \n")
+    caps_v4l2src = Gst.ElementFactory.make("capsfilter", "v4l2src_caps")
+    if not caps_v4l2src:
+        sys.stderr.write(" Unable to create v4l2src capsfilter \n")
 
 
     print("Creating Video Converter \n")
@@ -266,18 +268,26 @@ def main(args):
         sys.stderr.write(" Unable to create nvosd \n")
 
     # Finally render the osd output
-    if is_aarch64():
-        transform = Gst.ElementFactory.make("nvegltransform", "nvegl-transform")
-
-    print("Creating EGLSink \n")
-    sink = Gst.ElementFactory.make("nveglglessink", "nvvideo-renderer")
+    transform = None
+    if no_display:
+        print("Creating fakesink \n")
+        sink = Gst.ElementFactory.make("fakesink", "fakesink")
+        sink.set_property('enable-last-sample', 0)
+        # sink.set_property('sync', 0)
+    else: 
+        if is_aarch64():
+            transform = Gst.ElementFactory.make("nvegltransform", "nvegl-transform")
+            if not transform:
+                sys.stderr.write(" Unable to create transform \n")
+        print("Creating EGLSink \n")
+        sink = Gst.ElementFactory.make("nveglglessink", "nvvideo-renderer")
     if not sink:
         sys.stderr.write(" Unable to create egl sink \n")
 
     # print("Playing cam %s " %args[1])
     print("Playing Basler camera")
-    # source.set_property('pfs-location', './auto_image_adjustx.pfs')
-    # caps_v4l2src.set_property('caps', Gst.Caps.from_string("video/x-raw,framerate=30/1,format=rggb | bayer2rgb"))
+    source.set_property('pfs-location', 'light_profile.pfs')
+    caps_v4l2src.set_property('caps', Gst.Caps.from_string("video/x-raw,framerate=30/1"))
     caps_vidconvsrc.set_property('caps', Gst.Caps.from_string("video/x-raw(memory:NVMM)"))
     # source.set_property('device', args[1])
     streammux.set_property('width', 1920)
@@ -290,6 +300,7 @@ def main(args):
     # sgie.set_property('unique-id', 2)
     # sgie.set_property('infer-on-gie-id', 1)
     # Set sync = false to avoid late frame drops at the display-sink
+    # sink.set_property('qos', 0)
     sink.set_property('sync', False)
 
     # Set properties of tracker
@@ -332,7 +343,7 @@ def main(args):
     pipeline.add(nvvidconv)
     pipeline.add(nvosd)
     pipeline.add(sink)
-    if is_aarch64():
+    if transform:
         pipeline.add(transform)
 
     # we link the elements together
@@ -354,11 +365,14 @@ def main(args):
     srcpad.link(sinkpad)
     streammux.link(pgie)
     # pgie.link(nvvidconv)
+    streammux.link(sgie)
     pgie.link(tracker)
+    # sgie.link(tracker)
     tracker.link(sgie)
     sgie.link(nvvidconv)
+    # tracker.link(nvvidconv)
     nvvidconv.link(nvosd)
-    if is_aarch64():
+    if transform:
         nvosd.link(transform)
         transform.link(sink)
     else:

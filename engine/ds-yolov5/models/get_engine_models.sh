@@ -1,2 +1,1 @@
-wget https://vibratorvials.blob.core.windows.net/data/model_weights/model_b1_gpu0_fp32.vialsdown_od.engine -O DeepStream-Yolo/model_b1_gpu0_fp32.vialsdown_od.engine
-wget https://vibratorvials.blob.core.windows.net/data/model_weights/model_b1_gpu0_fp32.platform_od.engine -O DeepStream-Yolo/model_b1_gpu0_fp32.platform_od.engine
+wget https://camtagstoreaiem.blob.core.windows.net/carb/yolov5_fp16_100epochs.engine -O DeepStream-Yolo/yolov5_fp16_100epochs.engine
